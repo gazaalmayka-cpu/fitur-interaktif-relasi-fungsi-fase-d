@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Relasi dan Fungsi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700&display=swap">
+<style>
+:root{--bg1:#d6f2ff;--bg2:#a8ec6c;--card:rgba(255,255,255,.95);--ink:#123d1c;--mute:#3f6347;--line:#b9e58f;--blue:#178a31;--onblue:#fff;--good:#1b7a3a;--goodbg:#dcf7c8;--bad:#b33025;--badbg:#fbe6e3;--node:#fff;--soft:#eaf9dc;
+--a:#cf5f0b;--b:#1668a8;--pink:#c2255c;--teal:#0c8575;--aT:rgba(232,116,26,.14);--bT:rgba(27,127,196,.14);--g1:#1fa84a;--g2:#0e9f8a;--h1a:#0b7a2b;--h1b:#1360a8;--h1c:#b0215c}
+@media (prefers-color-scheme:dark){:root{--bg1:#0c1f2e;--bg2:#10361a;--card:rgba(23,49,38,.94);--ink:#e6f2e8;--mute:#a8c4b0;--line:#2b6b3a;--blue:#7ed99b;--onblue:#0c2a17;--good:#6fd18f;--goodbg:#1b3d29;--bad:#ff8a7d;--badbg:#3a1d1a;--node:#1f3d30;--soft:#1d3b2a;
+--a:#ffa94d;--b:#74c0fc;--pink:#faa2c1;--teal:#63e6be;--aT:rgba(255,169,77,.17);--bT:rgba(116,192,252,.17);--g1:#7ed99b;--g2:#63e6be;--h1a:#8ce99a;--h1b:#74c0fc;--h1c:#faa2c1;color-scheme:dark}.deco{opacity:.55}}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(var(--bg1),var(--bg2)) fixed;color:var(--ink);font:17px/1.55 Nunito,system-ui,sans-serif}
+.deco{position:fixed;inset:0;z-index:0;pointer-events:none}
+.deco svg{width:100%;height:100%;display:block}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:20px 16px 40px}
+h1{font:800 clamp(30px,6.5vw,44px)/1.1 "Baloo 2",system-ui,sans-serif;margin:8px 0 6px;background:linear-gradient(90deg,var(--h1a),var(--h1b),var(--h1c));-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content;max-width:100%}
+h2{font:600 20px/1.2 "Baloo 2",system-ui,sans-serif;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+h2::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--accent,var(--g1));flex:none}
+.lead{color:var(--mute);margin:0 0 16px;max-width:60ch}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.tab,.btn{font:700 16px Nunito,system-ui,sans-serif;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 16px;cursor:pointer;min-height:44px}
+.tab[aria-selected="true"],.btn.main,.opt[aria-pressed="true"]{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;color:var(--onblue)}
+.tab.locked{opacity:.45;cursor:not-allowed}
+.btn:hover,.tab:hover{border-color:var(--g2);box-shadow:0 2px 8px rgba(14,159,138,.25)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.opt{display:block;width:100%;text-align:left;margin:8px 0}
+.opt:disabled{opacity:.85;cursor:default}
+:focus-visible{outline:3px solid var(--b);outline-offset:2px}
+.card{background:var(--card);border:2px solid var(--line);border-top:6px solid var(--accent,var(--g1));border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(18,61,28,.1)}
+.ca{--accent:var(--a)}.cb{--accent:var(--b)}.cc{--accent:var(--pink)}.cd{--accent:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+select,input,textarea{font:700 16px Nunito,system-ui,sans-serif;padding:10px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);min-height:44px}
+input,textarea{width:100%;font-weight:400}
+textarea{resize:vertical}
+.sw{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;margin:10px 0}
+.sw input{width:24px;height:24px;min-height:0;accent-color:var(--g1)}
+.lab{display:grid;gap:4px;font-weight:700;margin:10px 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0}
+.grid2 label{display:grid;gap:4px;font-weight:700}
+.mrow{display:flex;gap:6px;margin:6px 0}
+.mrow input{flex:1;min-width:0}
+.mrow .btn{padding:6px 14px;min-width:44px}
+#listA input{border-color:var(--a)}
+#listB input{border-color:var(--b)}
+.scroll{max-height:560px;overflow:auto}
+svg{width:100%;height:auto;display:block}
+.hint{color:var(--mute);margin:6px 0 0;min-height:1.5em}
+.qtext{font-size:19px;font-weight:700;margin:8px 0;white-space:pre-wrap}
+.cap{display:flex;justify-content:space-around;font:800 19px "Baloo 2",system-ui,sans-serif;margin-bottom:2px;text-align:center}
+#nameA{color:var(--a)}#nameB{color:var(--b)}
+.badge{display:inline-block;font:800 18px "Baloo 2",system-ui,sans-serif;padding:4px 14px;border-radius:999px;margin-bottom:6px}
+.badge.ok{background:var(--goodbg);color:var(--good)}
+.badge.no{background:var(--badbg);color:var(--bad)}
+.badge.wait{background:var(--soft);color:var(--mute)}
+.tag{font:800 15px "Baloo 2",system-ui,sans-serif;padding:2px 12px;border-radius:999px;height:fit-content;min-width:60px;text-align:center;white-space:nowrap}
+.tag.ok{background:var(--goodbg);color:var(--good)}
+.tag.no{background:var(--badbg);color:var(--bad)}
+.tag.part{background:var(--soft);color:var(--mute)}
+.jrow,.rv{display:flex;gap:10px;margin:10px 0}
+.rv{padding-top:10px;border-top:1px solid var(--line)}
+.rv p{margin:2px 0;overflow-wrap:anywhere;white-space:pre-wrap}
+.big{font:800 64px/1 "Baloo 2",system-ui,sans-serif;margin:4px 0;background:linear-gradient(90deg,var(--h1a),var(--h1b),var(--h1c));-webkit-background-clip:text;background-clip:text;color:transparent;width:fit-content}
+.big small{font-size:24px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0 0}
+dt{font-weight:700;color:var(--b)}dd{margin:0;overflow-wrap:anywhere}
+.node{cursor:pointer}
+.node rect{fill:var(--node);stroke-width:2.5}
+.node.sA rect{stroke:var(--a)}
+.node.sB rect{stroke:var(--b)}
+.node.sel rect{stroke-width:5;fill:var(--soft)}
+.node text{fill:var(--ink);font:700 16px Nunito,system-ui,sans-serif}
+.set{stroke-width:2.5;stroke-dasharray:7 5}
+.setA{fill:var(--aT);stroke:var(--a)}
+.setB{fill:var(--bT);stroke:var(--b)}
+.arrow{cursor:pointer;outline:none}
+.arrow .hit{pointer-events:stroke}
+.arrow:hover .vis,.arrow:focus-visible .vis{stroke-width:6;opacity:.55}
+.arrow:hover .head,.arrow:focus-visible .head{opacity:.55}
+.fb{border-radius:12px;padding:10px 14px;margin-top:10px;overflow-wrap:anywhere}
+.fb.ok{background:var(--goodbg)}.fb.no{background:var(--badbg)}.fb.part{background:var(--soft)}
+.lockmsg{margin:12px 0 0;padding:8px 12px;border-radius:12px;background:var(--soft);color:var(--mute);font-weight:700}
+.lockmsg.flash{background:var(--badbg);color:var(--bad)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- Gambar lingkungan di latar belakang -->
+<div class="deco" aria-hidden="true">
+<svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <g id="leaf"><path d="M0 0C20-32 62-32 84 0C62 32 20 32 0 0Z"/><path d="M4 0H76" stroke="#2f9e44" stroke-width="2" fill="none"/></g>
+    <g id="tree"><rect x="-9" y="-10" width="18" height="90" rx="6" fill="#8b5a2b"/><circle cx="0" cy="-30" r="52" fill="#2f9e44"/><circle cx="-34" cy="0" r="38" fill="#40c057"/><circle cx="34" cy="0" r="38" fill="#37b24d"/></g>
+    <g id="flower"><g fill="#ff8fab"><circle cx="0" cy="-9" r="7"/><circle cx="9" cy="0" r="7"/><circle cx="0" cy="9" r="7"/><circle cx="-9" cy="0" r="7"/></g><circle r="5" fill="#ffd43b"/><rect x="-1.5" y="8" width="3" height="26" fill="#2f9e44"/></g>
+  </defs>
+  <circle cx="1070" cy="110" r="78" fill="#ffe066" opacity=".35"/>
+  <circle cx="1070" cy="110" r="52" fill="#ffd43b"/>
+  <g fill="#fff" opacity=".85">
+    <ellipse cx="170" cy="95" rx="70" ry="26"/><ellipse cx="215" cy="78" rx="46" ry="26"/><ellipse cx="130" cy="82" rx="40" ry="22"/>
+    <ellipse cx="620" cy="150" rx="62" ry="22"/><ellipse cx="660" cy="134" rx="40" ry="22"/>
+    <ellipse cx="880" cy="230" rx="56" ry="20"/><ellipse cx="915" cy="216" rx="34" ry="18"/>
+  </g>
+  <path d="M0 650C180 590 340 600 520 640C700 680 860 600 1200 630V800H0Z" fill="#8fdc5a"/>
+  <path d="M0 710C220 670 420 700 640 720C860 740 1020 690 1200 710V800H0Z" fill="#6cc644"/>
+  <path d="M0 770C300 740 600 780 900 760C1040 752 1130 764 1200 770V800H0Z" fill="#4fae3a"/>
+  <g transform="translate(95 640)"><use href="#tree"/></g>
+  <g transform="translate(285 672) scale(.8)"><use href="#tree"/></g>
+  <g transform="translate(1105 650)"><use href="#tree"/></g>
+  <g transform="translate(940 690) scale(.75)"><use href="#tree"/></g>
+  <circle cx="560" cy="720" r="34" fill="#4dabf7"/>
+  <path d="M540 705C552 692 566 700 572 712C566 726 550 732 542 724C538 718 536 712 540 705Z" fill="#51cf66"/>
+  <path d="M572 728C580 722 588 728 586 738C580 744 572 740 572 728Z" fill="#51cf66"/>
+  <g fill="#51cf66" opacity=".7">
+    <g transform="translate(30 260) rotate(-30)"><use href="#leaf"/></g>
+    <g transform="translate(1090 340) rotate(25)"><use href="#leaf"/></g>
+    <g transform="translate(1020 520) rotate(-50)"><use href="#leaf"/></g>
+    <g transform="translate(60 470) rotate(35)"><use href="#leaf"/></g>
+    <g transform="translate(440 40) rotate(15)"><use href="#leaf"/></g>
+  </g>
+  <g transform="translate(420 735)"><use href="#flower"/></g>
+  <g transform="translate(720 748)"><use href="#flower"/></g>
+  <g transform="translate(820 728)"><use href="#flower"/></g>
+  <g transform="translate(200 745)"><use href="#flower"/></g>
+</svg>
+</div>
+
+<main>
+<h1>Relasi dan Fungsi</h1>
+<p class="lead">Atur himpunan A dan B sesukamu, gambar panahnya, lalu lihat apakah relasimu sudah menjadi fungsi dan jenis fungsinya.</p>
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" id="t1" aria-selected="true">Coba sendiri</button>
+  <button class="tab" role="tab" id="t2" aria-selected="false">Kuis</button>
+  <button class="tab" role="tab" id="t3" aria-selected="false">Editor guru</button>
+</div>
+
+<!-- ===== Coba sendiri ===== -->
+<section id="p1">
+  <div class="card ca">
+    <h2>Atur himpunan</h2>
+    <div class="grid2">
+      <div>
+        <label>Nama himpunan A<input id="labA" maxlength="30"></label>
+        <div id="listA"></div>
+        <button class="btn" id="addA">Tambah anggota A</button>
+      </div>
+      <div>
+        <label>Nama himpunan B<input id="labB" maxlength="30"></label>
+        <div id="listB"></div>
+        <button class="btn" id="addB">Tambah anggota B</button>
+      </div>
+    </div>
+    <div class="row"><button class="btn" id="clear">Hapus semua panah</button></div>
+  </div>
+  <div class="card">
+    <p class="hint" id="hint1" style="margin:0 0 8px"></p>
+    <div class="cap"><span id="nameA">A</span><span id="nameB">B</span></div>
+    <div class="scroll"><svg id="svg1" role="img" aria-label="Diagram panah dari himpunan A ke himpunan B"></svg></div>
+  </div>
+  <div class="card cb" aria-live="polite">
+    <span class="badge wait" id="badge1">Belum ada panah</span>
+    <div id="why1"></div>
+    <dl id="info1"></dl>
+  </div>
+  <div class="card cc" id="jenisCard" aria-live="polite" hidden>
+    <h2>Jenis fungsi</h2>
+    <div id="jenis"></div>
+  </div>
+</section>
+
+<!-- ===== Kuis ===== -->
+<section id="p2" hidden>
+  <div class="card cd" id="qIntro">
+    <h2>Kuis</h2>
+    <p id="qIntroTxt"></p>
+    <button class="btn main" id="mulai">Mulai kuis</button>
+  </div>
+
+  <div class="card" id="qRun" hidden>
+    <h2 id="qh"></h2>
+    <p class="hint" id="qctx" style="margin-top:0"></p>
+    <p class="qtext" id="qText"></p>
+    <div class="scroll" id="qDgWrap" hidden><svg id="svg2" role="img" aria-label="Diagram panah soal kuis"></svg></div>
+    <div id="qPg" role="group" aria-label="Pilihan jawaban" hidden></div>
+    <textarea id="qEs" rows="5" placeholder="Tulis jawabanmu di sini" aria-label="Jawaban essay" hidden></textarea>
+    <div class="row" id="qbtns" style="margin-top:10px" hidden>
+      <button class="btn main" id="yes">Ini fungsi</button>
+      <button class="btn main" id="no">Bukan fungsi</button>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn main" id="kirim" hidden disabled>Kirim jawaban</button></div>
+    <div class="fb part" id="selfBox" hidden>
+      <div id="selfKey"></div>
+      <p style="margin:8px 0 6px"><b>Seberapa sesuai jawabanmu dengan kunci ini?</b></p>
+      <div class="row">
+        <button class="btn" data-f="1">Sudah sesuai</button>
+        <button class="btn" data-f="0.5">Sebagian sesuai</button>
+        <button class="btn" data-f="0">Belum sesuai</button>
+      </div>
+    </div>
+    <div class="fb" id="fb" hidden aria-live="polite"></div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="next" hidden>Soal berikutnya</button></div>
+    <p class="lockmsg" id="lockmsg" role="status">Kuis sedang berjalan. Kamu tidak bisa pindah ke halaman lain sampai soal terakhir dijawab.</p>
+  </div>
+
+  <div class="card cc" id="qResult" hidden aria-live="polite">
+    <h2>Hasil kuis</h2>
+    <div class="big" id="nilai"></div>
+    <p id="nilaiTxt" style="margin:0"></p>
+    <p id="nilaiMsg" class="hint"></p>
+    <div id="review"></div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn main" id="ulang">Ulangi kuis</button>
+      <button class="btn" id="keCoba">Ke Coba sendiri</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Editor guru ===== -->
+<section id="p3" hidden>
+  <div class="card cd">
+    <h2>Pengaturan kuis</h2>
+    <label class="sw" style="margin:0"><input type="checkbox" id="kAktif"> Kuis aktif (siswa bisa mengerjakan)</label>
+    <p class="hint" id="kAktifTxt"></p>
+  </div>
+
+  <div class="card ca">
+    <h2>Soal kuis (hanya guru)</h2>
+    <div class="row">
+      <select id="kSel" aria-label="Pilih soal kuis"></select>
+      <button class="btn" id="kHapus">Hapus soal ini</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <select id="kJenisBaru" aria-label="Jenis soal baru">
+        <option value="pg">Pilihan ganda</option>
+        <option value="essay">Essay</option>
+        <option value="diagram">Diagram panah (fungsi atau bukan)</option>
+      </select>
+      <button class="btn" id="kTambah">Tambah soal baru</button>
+    </div>
+  </div>
+
+  <div class="card cb">
+    <h2>Isi soal</h2>
+    <div class="grid2">
+      <label>Jenis soal
+        <select id="kTipe">
+          <option value="pg">Pilihan ganda</option>
+          <option value="essay">Essay</option>
+          <option value="diagram">Diagram panah (fungsi atau bukan)</option>
+        </select>
+      </label>
+      <label>Poin soal<input id="kPt" type="number" min="0" max="100"></label>
+    </div>
+    <label class="lab">Pertanyaan<textarea id="kQ" rows="3"></textarea></label>
+    <label class="sw"><input type="checkbox" id="kDg"> Sertakan diagram panah</label>
+
+    <div id="kDgBox">
+      <div class="grid2">
+        <label>Anggota A (satu per baris)<textarea id="kA" rows="4"></textarea></label>
+        <label>Anggota B (satu per baris)<textarea id="kB" rows="4"></textarea></label>
+      </div>
+      <button class="btn main" id="kTerap">Terapkan himpunan</button>
+      <p class="hint">Ketuk satu anggota A, lalu satu anggota B untuk menggambar panah. Ketuk panahnya untuk menghapus.</p>
+      <div class="scroll"><svg id="svg3" role="img" aria-label="Editor panah soal kuis"></svg></div>
+      <p><b id="dgKunci"></b></p>
+    </div>
+
+    <div id="kPgBox">
+      <label class="lab">Pilihan jawaban (satu opsi per baris, 2 sampai 6 opsi)<textarea id="kO" rows="5"></textarea></label>
+      <label class="lab">Kunci jawaban<select id="kK"></select></label>
+    </div>
+
+    <div id="kEsBox">
+      <label class="lab">Kunci atau pedoman jawaban<textarea id="kKunci" rows="3"></textarea></label>
+      <label class="lab">Kata kunci penilaian (pisahkan dengan koma, boleh dikosongkan)<input id="kKw" placeholder="contoh: setiap, tepat satu, pasangan"></label>
+      <p class="hint">Jika kata kunci diisi, nilai dihitung otomatis dari banyaknya kata kunci yang muncul di jawaban siswa. Jika dikosongkan tetapi kunci diisi, siswa menilai jawabannya sendiri dengan membandingkannya dengan kunci. Jika keduanya kosong, soal tidak ikut dinilai.</p>
+    </div>
+  </div>
+
+  <div class="card cc">
+    <h2>Simpan dan bagikan</h2>
+    <div class="row">
+      <button class="btn main" id="salin">Salin kode data</button>
+      <button class="btn" id="reset">Kembalikan kuis bawaan</button>
+      <button class="btn" id="kunciEd">Kunci editor</button>
+    </div>
+    <textarea id="kode" rows="4" aria-label="Kode data" style="margin-top:10px"></textarea>
+    <div class="grid2">
+      <label>PIN baru<input id="pinBaru" type="password" autocomplete="off"></label>
+      <span style="align-self:end"><button class="btn" id="gantiPin">Ganti PIN</button></span>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+/* ===== PENGATURAN GURU =====
+   GURU_AKTIF = true  -> tab Editor guru muncul (untuk guru).
+   GURU_AKTIF = false -> tab Editor guru dihapus (untuk salinan siswa). */
+const GURU_AKTIF=true;
+
+/* ===== DATA KUIS (diganti dengan tombol "Salin kode data") =====
+   kuisAktif: true = kuis bisa dikerjakan, false = tab Kuis disembunyikan.
+   t  : jenis soal ('pg' pilihan ganda, 'essay', 'diagram' fungsi atau bukan)
+   q  : teks pertanyaan, pt: poin
+   dg : true = tampilkan diagram (A, B, dan panah p). Panah "i-j": anggota A ke-i menunjuk anggota B ke-j (mulai dari 0).
+   o  : opsi pilihan ganda, k: nomor kunci (mulai dari 0)
+   kunci: kunci essay, kw: kata kunci essay */
+const DATA={
+ pin:"1234",
+ kuisAktif:true,
+ kuis:[
+  {t:'diagram',q:'Apakah relasi ini fungsi?',pt:10,A:['1','2','3'],B:['a','b','c','d'],p:['0-0','1-1','2-2']},
+  {t:'diagram',q:'Apakah relasi ini fungsi?',pt:10,A:['1','2','3'],B:['a','b','c','d'],p:['0-0','0-1','1-2','2-3']},
+  {t:'diagram',q:'Apakah relasi ini fungsi?',pt:10,A:['1','2','3'],B:['a','b','c','d'],p:['0-0','1-1']},
+  {t:'pg',q:'Relasi dari himpunan A ke himpunan B disebut fungsi jika ...',pt:10,o:['setiap anggota A punya tepat satu pasangan di B','setiap anggota B punya tepat satu pasangan di A','ada anggota A yang tidak punya pasangan','satu anggota A boleh punya dua pasangan di B'],k:0},
+  {t:'pg',q:'Perhatikan diagram. Berapa banyak anggota B yang tidak punya pasangan di A?',pt:10,dg:true,A:['1','2','3'],B:['a','b','c','d'],p:['0-0','1-1','2-2'],o:['0','1','2','3'],k:1},
+  {t:'essay',q:'Jelaskan dengan kata-katamu sendiri: apa syarat sebuah relasi disebut fungsi?',pt:20,kunci:'Setiap anggota himpunan A harus punya tepat satu pasangan di himpunan B.',kw:['setiap','tepat satu','pasangan']}
+ ]
+};
+
+/* Himpunan awal untuk "Coba sendiri" (siswa bebas mengubahnya) */
+const AWAL={a:'Himpunan A (angka)',b:'Himpunan B (huruf)',A:['1','2','3'],B:['a','b','c','d']};
+
+const $=s=>document.querySelector(s), NS='http://www.w3.org/2000/svg', KEY='relasi-fungsi-kuis-v3';
+const COL=['#ef476f','#118ab2','#06a77d','#ff9f1c','#8338ec','#e76f51'];
+const JENIS={pg:'Pilihan ganda',essay:'Essay',diagram:'Diagram panah'};
+
+/* Melengkapi data soal supaya selalu lengkap */
+function fixQ(q){
+  q.t=JENIS[q.t]?q.t:'diagram';
+  q.q=q.q||'';
+  q.pt=Number.isFinite(+q.pt)?+q.pt:10;
+  q.A=q.A&&q.A.length?q.A:['1','2','3'];
+  q.B=q.B&&q.B.length?q.B:['a','b','c'];
+  q.p=q.p||[];
+  q.o=q.o&&q.o.length>=2?q.o:['Opsi 1','Opsi 2'];
+  q.k=Math.min(Math.max(+q.k||0,0),q.o.length-1);
+  q.kunci=q.kunci||'';
+  q.kw=q.kw||[];
+  q.dg=q.t==='diagram'?true:!!q.dg;
+  return q;
+}
+function newQ(t){
+  return fixQ({t,q:t==='diagram'?'Apakah relasi ini fungsi?':'Tulis pertanyaanmu di sini',pt:10,o:['Opsi 1','Opsi 2','Opsi 3','Opsi 4']});
+}
+
+let D=JSON.parse(JSON.stringify(DATA));
+if(GURU_AKTIF){try{const s=localStorage.getItem(KEY);if(s)D=JSON.parse(s)}catch(e){}}
+D.kuis=(D.kuis||[]).map(fixQ);
+let stale=false;
+const kuisOn=()=>D.kuisAktif!==false;
+const poin=q=>Math.max(0,Number(q.pt)||0);
+const r1=n=>Math.round(n*10)/10;
+const norm=s=>String(s).toLowerCase().replace(/\s+/g,' ').trim();
+
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a||{})e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function fill(id,arr,idx){const s=$(id);s.innerHTML='';arr.forEach((t,i)=>{const o=document.createElement('option');o.value=i;o.textContent=t;s.appendChild(o)});s.value=idx}
+
+/* ---------- Analisis relasi ---------- */
+function analyze(A,B,pairs){
+  const nm=(arr,i)=>(arr[i]||'').trim()||'?';
+  const out=A.map(()=>0), inn=B.map(()=>0);
+  pairs.forEach(k=>{const [i,j]=k.split('-').map(Number);out[i]++;inn[j]++});
+  const idxA=A.map((_,i)=>i), idxB=B.map((_,j)=>j);
+  const none=idxA.filter(i=>out[i]===0).map(i=>nm(A,i)), multi=idxA.filter(i=>out[i]>1).map(i=>nm(A,i));
+  const isFunc=!none.length&&!multi.length;
+  let why;
+  if(isFunc){
+    why='Setiap anggota A punya tepat satu pasangan di B.';
+    if(inn.some(n=>n>1))why+=' Beberapa anggota A berpasangan dengan anggota B yang sama, dan itu boleh.';
+  }else{
+    const p=[];
+    if(none.length)p.push(none.join(', ')+' belum punya pasangan.');
+    if(multi.length)p.push(multi.join(', ')+' punya lebih dari satu pasangan.');
+    why='Bukan fungsi. '+p.join(' ');
+  }
+  const noneB=idxB.filter(j=>inn[j]===0).map(j=>nm(B,j)), multiB=idxB.filter(j=>inn[j]>1).map(j=>nm(B,j));
+  const inj=!multiB.length, sur=!noneB.length;
+  return {isFunc,why,range:idxB.filter(j=>inn[j]>0).map(j=>nm(B,j)),inj,sur,bij:inj&&sur,multiB,noneB};
+}
+/* Hanya satu jenis yang ditampilkan: bijektif > injektif > surjektif */
+function jenis(r){
+  if(r.bij)return [['Bijektif (korespondensi satu-satu)','Fungsi ini injektif dan surjektif sekaligus: setiap anggota B dipasangkan dengan tepat satu anggota A.']];
+  if(r.inj)return [['Injektif (satu-satu)','Tidak ada anggota B yang dipasangkan oleh lebih dari satu anggota A.']];
+  if(r.sur)return [['Surjektif (pada)','Setiap anggota B punya pasangan di A, jadi range sama dengan kodomain.']];
+  return [];
+}
+function ket(r){
+  if(r.bij)return 'Fungsi ini bijektif (injektif dan surjektif).';
+  if(r.inj)return 'Fungsi ini injektif.';
+  if(r.sur)return 'Fungsi ini surjektif.';
+  return 'Fungsi ini bukan injektif maupun surjektif.';
+}
+
+/* ---------- Gambar diagram panah ---------- */
+function draw(svg,A,B,pairs,sel,onNode,onArrow){
+  svg.innerHTML='';
+  const nm=v=>(v||'').trim()||'?';
+  const n=Math.max(A.length,B.length,1), h=n*56+24;
+  svg.setAttribute('viewBox','0 0 420 '+h);
+  const y=(i,m)=>h/2+(i-(m-1)/2)*56;
+  el('ellipse',{cx:80,cy:h/2,rx:70,ry:h/2-4,class:'set setA'},svg);
+  el('ellipse',{cx:340,cy:h/2,rx:70,ry:h/2-4,class:'set setB'},svg);
+  pairs.forEach(k=>{
+    const [i,j]=k.split('-').map(Number), c=COL[i%COL.length];
+    const x1=124,y1=y(i,A.length),x2=294,y2=y(j,B.length);
+    const a=Math.atan2(y2-y1,x2-x1), g=el('g',{class:'arrow'},svg);
+    const ex=x2-8*Math.cos(a), ey=y2-8*Math.sin(a);
+    if(onArrow){
+      g.setAttribute('tabindex','0');g.setAttribute('role','button');
+      g.setAttribute('aria-label',`Hapus panah dari ${nm(A[i])} ke ${nm(B[j])}`);
+      const tt=el('title',{},g);tt.textContent='Ketuk untuk menghapus panah';
+      g.addEventListener('click',()=>onArrow(k));
+      g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '||e.key==='Delete'){e.preventDefault();onArrow(k)}});
+      el('line',{x1,y1,x2:ex,y2:ey,class:'hit',stroke:'transparent','stroke-width':20,'stroke-linecap':'round'},g);
+    }
+    el('line',{x1,y1,x2:ex,y2:ey,class:'vis',stroke:c,'stroke-width':4,'stroke-linecap':'round'},g);
+    const s=12,w=0.45;
+    el('polygon',{class:'head',points:`${x2},${y2} ${x2-s*Math.cos(a-w)},${y2-s*Math.sin(a-w)} ${x2-s*Math.cos(a+w)},${y2-s*Math.sin(a+w)}`,fill:c},g);
+  });
+  const nodes=(arr,cx,side)=>arr.forEach((v,i)=>{
+    const t=nm(v);
+    const g=el('g',{class:'node s'+side+(sel&&sel.side===side&&sel.i===i?' sel':''),tabindex:onNode?0:-1,role:onNode?'button':'img','aria-label':'Anggota '+side+': '+t},svg);
+    el('rect',{x:cx-42,y:y(i,arr.length)-18,width:84,height:36,rx:18},g);
+    const tx=el('text',{x:cx,y:y(i,arr.length)+5.5,'text-anchor':'middle',style:'font-size:'+Math.min(16,Math.max(8,Math.floor(138/t.length)))+'px'},g);tx.textContent=t;
+    if(onNode){g.addEventListener('click',()=>onNode(side,i));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onNode(side,i)}})}
+  });
+  nodes(A,80,'A');nodes(B,340,'B');
+}
+
+/* ---------- Coba sendiri (siswa bebas mengubah) ---------- */
+let cur, pairs=new Set(), sel=null;
+
+function listMember(side){
+  const arr=cur[side], box=$('#list'+side);
+  box.innerHTML='';
+  arr.forEach((v,i)=>{
+    const r=document.createElement('div');r.className='mrow';
+    const inp=document.createElement('input');
+    inp.value=v;inp.maxLength=24;inp.setAttribute('aria-label',`Anggota ${side} ke-${i+1}`);
+    inp.oninput=()=>{arr[i]=inp.value;render1()};
+    const x=document.createElement('button');
+    x.className='btn';x.textContent='×';x.setAttribute('aria-label',`Hapus anggota ${side} ke-${i+1}`);
+    x.disabled=arr.length<2;
+    x.onclick=()=>removeMember(side,i);
+    r.append(inp,x);box.appendChild(r);
+  });
+}
+function removeMember(side,i){
+  cur[side].splice(i,1);
+  const np=new Set();
+  pairs.forEach(k=>{
+    let [a,b]=k.split('-').map(Number);
+    const idx=side==='A'?a:b;
+    if(idx===i)return;
+    if(idx>i){side==='A'?a--:b--}
+    np.add(a+'-'+b);
+  });
+  pairs=np;sel=null;
+  listMember(side);render1();
+}
+function addMember(side){
+  cur[side].push(String(cur[side].length+1));
+  listMember(side);render1();
+  const ins=$('#list'+side).querySelectorAll('input');ins[ins.length-1].focus();ins[ins.length-1].select();
+}
+function loadAwal(){
+  cur={a:AWAL.a,b:AWAL.b,A:AWAL.A.slice(),B:AWAL.B.slice()};
+  pairs=new Set();sel=null;
+  $('#labA').value=cur.a;$('#labB').value=cur.b;
+  listMember('A');listMember('B');render1();
+}
+function render1(){
+  $('#nameA').textContent=cur.a||'A';$('#nameB').textContent=cur.b||'B';
+  draw($('#svg1'),cur.A,cur.B,[...pairs],sel,onNode,k=>{pairs.delete(k);sel=null;render1()});
+  $('#hint1').textContent=sel?`Sekarang pilih anggota B untuk pasangan ${(cur.A[sel.i]||'').trim()||'?'}.`:'Ketuk satu anggota A, lalu satu anggota B untuk menggambar panah. Ketuk panahnya untuk menghapus.';
+  const b=$('#badge1'), info=$('#info1'), jc=$('#jenisCard'), jb=$('#jenis');
+  info.innerHTML='';jb.innerHTML='';
+  if(!pairs.size){b.className='badge wait';b.textContent='Belum ada panah';$('#why1').textContent='';jc.hidden=true;return}
+  const r=analyze(cur.A,cur.B,[...pairs]);
+  b.className='badge '+(r.isFunc?'ok':'no');b.textContent=r.isFunc?'Ini fungsi':'Bukan fungsi';
+  $('#why1').textContent=r.why;
+  const nm=(arr,i)=>(arr[i]||'').trim()||'?';
+  const ps=[...pairs].map(k=>k.split('-').map(Number)).sort((x,y)=>x[0]-y[0]||x[1]-y[1]).map(([i,j])=>`(${nm(cur.A,i)}, ${nm(cur.B,j)})`).join(', ');
+  const rows=[['Relasi',ps]];
+  if(r.isFunc){
+    rows.push(['Domain','{'+cur.A.map((_,i)=>nm(cur.A,i)).join(', ')+'}'],['Kodomain','{'+cur.B.map((_,j)=>nm(cur.B,j)).join(', ')+'}'],['Range','{'+r.range.join(', ')+'}']);
+  }
+  rows.forEach(([k,v])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=k;dd.textContent=v;info.append(dt,dd)});
+  jc.hidden=false;
+  if(!r.isFunc){
+    const p=document.createElement('p');p.style.margin='0';
+    p.textContent='Injektif, surjektif, dan bijektif hanya dinilai untuk fungsi. Perbaiki dulu panahnya sampai setiap anggota A punya tepat satu pasangan.';
+    jb.appendChild(p);return;
+  }
+  const js=jenis(r);
+  if(!js.length){
+    const p=document.createElement('p');p.style.margin='0';
+    p.textContent='Fungsi ini bukan injektif maupun surjektif.';
+    jb.appendChild(p);return;
+  }
+  js.forEach(([nama,teks])=>{
+    const row=document.createElement('div');row.className='jrow';
+    const tag=document.createElement('span');tag.className='tag ok';tag.textContent='Ya';
+    const box=document.createElement('div');
+    const bd=document.createElement('b');bd.textContent=nama;
+    box.append(bd,document.createElement('br'),document.createTextNode(teks));
+    row.append(tag,box);jb.appendChild(row);
+  });
+}
+function onNode(side,i){
+  if(side==='A'){sel=(sel&&sel.i===i)?null:{side:'A',i}}
+  else if(sel){const k=sel.i+'-'+i;pairs.has(k)?pairs.delete(k):pairs.add(k);sel=null}
+  render1();
+}
+$('#clear').onclick=()=>{pairs=new Set();sel=null;render1()};
+$('#addA').onclick=()=>addMember('A');$('#addB').onclick=()=>addMember('B');
+$('#labA').oninput=e=>{cur.a=e.target.value;render1()};
+$('#labB').oninput=e=>{cur.b=e.target.value;render1()};
+
+/* ---------- Navigasi tab + kunci saat kuis berjalan ---------- */
+let locked=false;
+function tab(n){[1,2,3].forEach(i=>{const p=$('#p'+i);if(p)p.hidden=i!==n;const t=$('#t'+i);if(t)t.setAttribute('aria-selected',i===n)})}
+function setLock(v){
+  locked=v;
+  ['#t1','#t3'].forEach(s=>{const t=$(s);if(t){t.classList.toggle('locked',v);t.setAttribute('aria-disabled',v)}});
+}
+function flash(){
+  const m=$('#lockmsg');m.classList.add('flash');
+  setTimeout(()=>m.classList.remove('flash'),900);
+}
+function go(n){
+  if(locked&&n!==2){flash();return false}
+  if(n===2&&stale&&!locked){stale=false;showIntro()}
+  tab(n);return true;
+}
+window.addEventListener('beforeunload',e=>{if(locked){e.preventDefault();e.returnValue=''}});
+$('#t1').onclick=()=>go(1);
+$('#t2').onclick=()=>go(2);
+
+/* ---------- Kuis ---------- */
+let qi=0,earned=0,done=false,results=[],pick=null,essayText='';
+function applyKuis(){
+  $('#t2').hidden=!kuisOn();
+  if(!kuisOn()&&!$('#p2').hidden)tab(1);
+}
+function showOnly(id){['#qIntro','#qRun','#qResult'].forEach(s=>$(s).hidden=s!==id)}
+function showIntro(){
+  setLock(false);showOnly('#qIntro');
+  const N=D.kuis.length;
+  const jn=[...new Set(D.kuis.map(q=>JENIS[q.t].toLowerCase()))].join(', ');
+  $('#qIntroTxt').textContent=N?`Kuis ini terdiri dari ${N} soal (${jn}). Nilaimu langsung muncul setelah soal terakhir. Selama kuis berjalan, kamu tidak bisa pindah ke Coba sendiri.`:'Belum ada soal kuis.';
+  $('#mulai').hidden=!N;
+}
+function startQuiz(){
+  qi=0;earned=0;results=[];setLock(true);showOnly('#qRun');showQ();
+}
+function showQ(){
+  const q=D.kuis[qi];done=false;pick=null;essayText='';
+  ['#fb','#next','#selfBox'].forEach(s=>$(s).hidden=true);
+  $('#qh').textContent=`Soal ${qi+1} dari ${D.kuis.length}`;
+  $('#qctx').textContent=JENIS[q.t]+' · '+poin(q)+' poin';
+  $('#qText').textContent=q.q;
+  const dg=q.t==='diagram'||q.dg;
+  $('#qDgWrap').hidden=!dg;
+  if(dg)draw($('#svg2'),q.A,q.B,q.p,null,null);
+  const pg=$('#qPg');pg.hidden=q.t!=='pg';pg.innerHTML='';
+  if(q.t==='pg')q.o.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='btn opt';b.textContent=t;b.setAttribute('aria-pressed','false');
+    b.onclick=()=>{
+      if(done)return;pick=i;
+      [...pg.children].forEach((c,j)=>c.setAttribute('aria-pressed',j===i?'true':'false'));
+      $('#kirim').disabled=false;
+    };
+    pg.appendChild(b);
+  });
+  const es=$('#qEs');es.hidden=q.t!=='essay';es.value='';es.disabled=false;
+  $('#qbtns').hidden=q.t!=='diagram';
+  const k=$('#kirim');k.hidden=q.t==='diagram';k.disabled=true;
+}
+function finishQ(x){
+  done=true;
+  const q=D.kuis[qi], pt=poin(q), graded=x.graded!==false;
+  const res={t:q.t,q:q.q,pt,got:x.got,graded,ans:x.ans,key:x.key||'',info:x.info||''};
+  results.push(res);
+  if(graded)earned+=res.got;
+  const full=res.got>=pt, none=res.got<=0;
+  let head,cls;
+  if(!graded){head='Jawabanmu tersimpan, tetapi soal ini tidak dinilai otomatis. ';cls='part'}
+  else if(full){head='Benar! ';cls='ok'}
+  else if(none){head='Belum tepat. ';cls='no'}
+  else{head='Sebagian benar. ';cls='part'}
+  let t=head;
+  if(q.t==='pg'&&graded&&!full)t+=`Kunci: ${res.key}. `;
+  t+=res.info;
+  if(q.t==='essay'&&res.key)t+=` Kunci atau pedoman: ${res.key}`;
+  const fb=$('#fb');fb.hidden=false;fb.className='fb '+cls;fb.textContent=t.trim();
+  [...$('#qPg').children].forEach(b=>b.disabled=true);
+  $('#qEs').disabled=true;
+  ['#qbtns','#kirim','#selfBox'].forEach(s=>$(s).hidden=true);
+  const nx=$('#next');nx.hidden=false;
+  nx.textContent=qi===D.kuis.length-1?'Lihat nilai':'Soal berikutnya';nx.focus();
+}
+function answerDiagram(say){
+  if(done)return;
+  const q=D.kuis[qi],r=analyze(q.A,q.B,q.p),ok=say===r.isFunc;
+  finishQ({got:ok?poin(q):0,ans:say?'fungsi':'bukan fungsi',key:r.isFunc?'fungsi':'bukan fungsi',info:r.why+(r.isFunc?' '+ket(r):'')});
+}
+function kirim(){
+  if(done)return;
+  const q=D.kuis[qi], pt=poin(q);
+  if(q.t==='pg'){
+    if(pick===null)return;
+    finishQ({got:pick===q.k?pt:0,ans:q.o[pick],key:q.o[q.k]});
+  }else if(q.t==='essay'){
+    const text=$('#qEs').value.trim();
+    if(!text)return;
+    if(q.kw.length){
+      const nt=norm(text), found=q.kw.filter(w=>nt.includes(norm(w))), miss=q.kw.filter(w=>!found.includes(w));
+      finishQ({got:r1(pt*found.length/q.kw.length),ans:text,key:q.kunci,info:`Kata kunci yang ditemukan: ${found.length} dari ${q.kw.length}.`+(miss.length?` Belum muncul: ${miss.join(', ')}.`:'')});
+    }else if(q.kunci.trim()){
+      essayText=text;$('#qEs').disabled=true;$('#kirim').hidden=true;
+      $('#selfKey').textContent='Kunci atau pedoman jawaban: '+q.kunci;
+      $('#selfBox').hidden=false;
+    }else{
+      finishQ({got:0,graded:false,ans:text,key:''});
+    }
+  }
+}
+$('#qEs').oninput=()=>{$('#kirim').disabled=!$('#qEs').value.trim()};
+$('#kirim').onclick=kirim;
+document.querySelectorAll('#selfBox [data-f]').forEach(b=>b.onclick=()=>{
+  if(done)return;
+  const q=D.kuis[qi],f=+b.dataset.f;
+  finishQ({got:r1(poin(q)*f),ans:essayText,key:q.kunci,info:'Penilaian dari dirimu sendiri: '+b.textContent.toLowerCase()+'.'});
+});
+$('#yes').onclick=()=>answerDiagram(true);
+$('#no').onclick=()=>answerDiagram(false);
+$('#next').onclick=()=>{if(qi<D.kuis.length-1){qi++;showQ()}else finish()};
+
+function finish(){
+  setLock(false);showOnly('#qResult');
+  const total=results.filter(r=>r.graded).reduce((s,r)=>s+r.pt,0);
+  const nilai=total?Math.round(earned/total*100):0;
+  const ung=results.filter(r=>!r.graded).length;
+  $('#nilai').textContent='';
+  const sm=document.createElement('small');sm.textContent=' / 100';
+  $('#nilai').append(String(nilai),sm);
+  $('#nilaiTxt').textContent=total?`Kamu mendapat ${r1(earned)} dari ${total} poin.`+(ung?` ${ung} soal tidak dinilai otomatis.`:''):'Belum ada soal yang bisa dinilai otomatis.';
+  $('#nilaiMsg').textContent=!total?'':nilai>=80?'Hebat! Pemahamanmu tentang fungsi sudah kuat.':nilai>=60?'Bagus! Sedikit lagi, coba pelajari soal yang masih salah.':'Ayo berlatih lagi di Coba sendiri, lalu ulangi kuisnya.';
+  const rv=$('#review');rv.innerHTML='';
+  results.forEach((x,i)=>{
+    const row=document.createElement('div');row.className='rv';
+    const tag=document.createElement('span');
+    if(!x.graded){tag.className='tag part';tag.textContent='Tidak dinilai'}
+    else if(x.got>=x.pt){tag.className='tag ok';tag.textContent='Benar'}
+    else if(x.got<=0){tag.className='tag no';tag.textContent='Salah'}
+    else{tag.className='tag part';tag.textContent='Sebagian'}
+    const box=document.createElement('div');
+    const add=(txt,bold)=>{const p=document.createElement('p');if(bold){const b=document.createElement('b');b.textContent=txt;p.appendChild(b)}else p.textContent=txt;box.appendChild(p)};
+    add(`Soal ${i+1} (${JENIS[x.t]}, ${r1(x.got)} dari ${x.pt} poin)`,true);
+    add(x.q);
+    add('Jawabanmu: '+x.ans);
+    if(x.key)add((x.t==='essay'?'Kunci atau pedoman: ':'Kunci: ')+x.key);
+    if(x.info)add(x.info);
+    row.append(tag,box);rv.appendChild(row);
+  });
+  $('#qResult').scrollIntoView();
+}
+$('#mulai').onclick=startQuiz;
+$('#ulang').onclick=showIntro;
+$('#keCoba').onclick=()=>go(1);
+
+/* ---------- Editor guru (kuis) ---------- */
+if(GURU_AKTIF){
+  let ek=0,ksel=null,buka=false;
+  const lines=t=>t.split(/[\n,]/).map(s=>s.trim()).filter(Boolean);
+  const optLines=t=>t.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,6);
+  const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}stale=true};
+  const optLabel=(k,i)=>`${i+1}. [${JENIS[k.t]}] ${(k.q||'').slice(0,30)}`;
+  const cq=()=>D.kuis[ek];
+
+  function isiAktif(){
+    $('#kAktif').checked=kuisOn();
+    $('#kAktifTxt').textContent=kuisOn()?'Tab Kuis tampil dan siswa bisa mengerjakannya.':'Tab Kuis disembunyikan dari siswa. Nyalakan lagi saat kuis siap dikerjakan.';
+  }
+  function tampilBox(){
+    const k=cq();
+    $('#kDgBox').hidden=!k.dg;
+    $('#kPgBox').hidden=k.t!=='pg';
+    $('#kEsBox').hidden=k.t!=='essay';
+  }
+  function isiKunciPg(){const k=cq();fill('#kK',k.o.map((o,i)=>`${i+1}. ${o}`),k.k)}
+  function gambarK(){
+    const k=cq();
+    if(!k.dg){$('#svg3').innerHTML='';$('#dgKunci').textContent='';return}
+    draw($('#svg3'),k.A,k.B,k.p,ksel,(side,i)=>{
+      if(side==='A'){ksel=(ksel&&ksel.i===i)?null:{side:'A',i}}
+      else if(ksel){const key=ksel.i+'-'+i,x=k.p.indexOf(key);x>=0?k.p.splice(x,1):k.p.push(key);ksel=null;persist()}
+      gambarK();
+    },key=>{
+      const x=k.p.indexOf(key);if(x>=0)k.p.splice(x,1);
+      ksel=null;persist();gambarK();
+    });
+    if(k.t==='diagram'){
+      const r=analyze(k.A,k.B,k.p);
+      $('#dgKunci').textContent=k.p.length?(r.isFunc?'Kunci jawaban: fungsi. '+ket(r):'Kunci jawaban: bukan fungsi. '+r.why.replace('Bukan fungsi. ','')):'Belum ada panah, jadi kunci jawabannya: bukan fungsi.';
+    }else{
+      $('#dgKunci').textContent='Diagram ini hanya gambar pendukung soal.';
+    }
+  }
+  function isiKuis(){
+    if(ek>=D.kuis.length)ek=0;
+    fill('#kSel',D.kuis.map(optLabel),ek);
+    const k=cq();
+    $('#kTipe').value=k.t;$('#kPt').value=k.pt;$('#kQ').value=k.q;
+    $('#kDg').checked=k.dg;$('#kDg').disabled=k.t==='diagram';
+    $('#kA').value=k.A.join('\n');$('#kB').value=k.B.join('\n');
+    $('#kO').value=k.o.join('\n');isiKunciPg();
+    $('#kKunci').value=k.kunci;$('#kKw').value=k.kw.join(', ');
+    tampilBox();gambarK();
+  }
+
+  $('#t3').onclick=()=>{
+    if(locked){flash();return}
+    if(!buka){
+      const p=prompt('Masukkan PIN guru:');
+      if(p===null)return;
+      if(p!==D.pin){alert('PIN salah.');return}
+      buka=true;isiAktif();isiKuis();
+    }
+    tab(3);
+  };
+
+  $('#kAktif').onchange=e=>{D.kuisAktif=e.target.checked;persist();isiAktif();applyKuis()};
+  $('#kSel').onchange=e=>{ek=+e.target.value;ksel=null;isiKuis()};
+  $('#kTambah').onclick=()=>{D.kuis.push(newQ($('#kJenisBaru').value));ek=D.kuis.length-1;ksel=null;persist();isiKuis()};
+  $('#kHapus').onclick=()=>{
+    if(D.kuis.length<2){alert('Minimal harus ada satu soal kuis.');return}
+    if(!confirm('Hapus soal ini?'))return;
+    D.kuis.splice(ek,1);ek=0;ksel=null;persist();isiKuis();
+  };
+
+  $('#kTipe').onchange=e=>{const k=cq();k.t=e.target.value;fixQ(k);ksel=null;persist();isiKuis()};
+  $('#kPt').oninput=e=>{cq().pt=Math.max(0,Math.min(100,+e.target.value||0));persist()};
+  $('#kQ').oninput=e=>{const k=cq();k.q=e.target.value;persist();$('#kSel').options[ek].textContent=optLabel(k,ek)};
+  $('#kDg').onchange=e=>{cq().dg=e.target.checked;ksel=null;persist();tampilBox();gambarK()};
+
+  $('#kTerap').onclick=()=>{
+    const k=cq(),A=lines($('#kA').value),B=lines($('#kB').value);
+    if(!A.length||!B.length){alert('Himpunan A dan B tidak boleh kosong.');return}
+    k.A=A;k.B=B;
+    k.p=k.p.filter(x=>{const [i,j]=x.split('-').map(Number);return i<A.length&&j<B.length});
+    ksel=null;persist();isiKuis();
+  };
+
+  $('#kO').oninput=e=>{
+    const o=optLines(e.target.value),k=cq();
+    if(o.length<2)return;
+    k.o=o;if(k.k>=o.length)k.k=0;
+    isiKunciPg();persist();
+  };
+  $('#kK').onchange=e=>{cq().k=+e.target.value;persist()};
+  $('#kKunci').oninput=e=>{cq().kunci=e.target.value;persist()};
+  $('#kKw').oninput=e=>{cq().kw=e.target.value.split(',').map(s=>s.trim()).filter(Boolean);persist()};
+
+  $('#salin').onclick=()=>{
+    const t='const DATA='+JSON.stringify(D,null,1)+';';
+    const box=$('#kode');box.value=t;box.select();
+    try{navigator.clipboard.writeText(t)}catch(e){try{document.execCommand('copy')}catch(e2){}}
+  };
+  $('#reset').onclick=()=>{
+    if(!confirm('Kembalikan semua soal kuis ke bawaan? Perubahanmu akan hilang.'))return;
+    try{localStorage.removeItem(KEY)}catch(e){}
+    D=JSON.parse(JSON.stringify(DATA));D.kuis=D.kuis.map(fixQ);ek=0;ksel=null;
+    isiAktif();isiKuis();applyKuis();showIntro();stale=false;
+  };
+  $('#gantiPin').onclick=()=>{
+    const v=$('#pinBaru').value.trim();
+    if(v.length<4){alert('PIN minimal 4 karakter.');return}
+    D.pin=v;persist();$('#pinBaru').value='';alert('PIN sudah diganti.');
+  };
+  $('#kunciEd').onclick=()=>{buka=false;tab(1)};
+}else{
+  $('#t3').remove();$('#p3').remove();
+}
+
+loadAwal();applyKuis();showIntro();
+</script>
+</body>
+</html>
